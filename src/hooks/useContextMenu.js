@@ -1,28 +1,28 @@
 import { useState, useEffect } from "react";
 
-const useContextMenu = (ref) => {
+const useContextMenu = (ref1, ref2) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [contextText, setContextText] = useState("");
   const [contextCords, setContextCords] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const showContext = (e) => {
-      if (ref.current.contains(e.target)) {
+      if (ref1.current.contains(e.target)) {
         e.preventDefault();
-        setShowContextMenu(true);
         setContextCords({ x: e.pageX, y: e.pageY });
         setContextText(e.target.innerText);
+        setShowContextMenu(true);
       }
     };
 
     document.addEventListener("contextmenu", showContext);
     return () => document.addEventListener("contextmenu", showContext);
-  }, []);
+  }, [ref1]);
 
   useEffect(() => {
     const hideContext = (e) => {
-      if (!ref.current.contains(e.target)) {
-        e.target.value && console.log(e.target.value);
+      if (ref2.current && ref2.current.contains(e.target)) return;
+      if (!ref1.current.contains(e.target)) {
         setShowContextMenu(false);
       }
     };
@@ -33,9 +33,9 @@ const useContextMenu = (ref) => {
       document.removeEventListener("click", hideContext);
       document.removeEventListener("contextmenu", hideContext);
     };
-  }, [ref]);
+  }, [ref1, ref2]);
 
-  return { showContextMenu, contextCords, contextText };
+  return { showContextMenu, contextCords, contextText, setShowContextMenu };
 };
 
 export default useContextMenu;
