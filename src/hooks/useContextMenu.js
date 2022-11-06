@@ -16,7 +16,7 @@ const useContextMenu = (ref1, ref2) => {
     };
 
     document.addEventListener("contextmenu", showContext);
-    return () => document.addEventListener("contextmenu", showContext);
+    return () => document.removeEventListener("contextmenu", showContext);
   }, [ref1]);
 
   useEffect(() => {
